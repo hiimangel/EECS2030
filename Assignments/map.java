@@ -69,28 +69,38 @@ public class Map {
 	 * @exception IllegalArgumentException if any of the precondition did not meet.
 	 */
 	public String getPath (int startRow, int startCol, int destRow, int destCol , String path) {
-		// Please complete this method
-		// you should decide on what should be returned. This return statement is here to avoid compiler error.
-		boolean startrow_true  = false; //
-		boolean startcol_true = false;
-		boolean destrow_true = false;
-		boolean destcol_true = false;
-		boolean isitoutofrange_row = false;
-		boolean isitoutofrange_col = false;
-		if (startRow > this.row || destRow > this.row)
-			isitoutofrange_row = true;
+		// initializations of booleans to check for possible errors
+		boolean boolStartRow  = false; 
+		boolean boolStartCol = false;
+		boolean boolDestRow = false;
+		boolean boolDestCol = false;
+		boolean boolOutOfRangeRow = false;
+		boolean boolOutOfRangeCol = false;
+		
+		// if the startRow or destRow argument is larger than max of grid 
+		// boolean variable is true so that error can be thrown in the upcoming if statement
+		if (startRow > this.row || destRow > this.row) 
+			boolOutOfRangeRow = true;
+		// if the startCol or destCol argument is larger than max of grid
+		// boolean variable is true so that error can be thrown in the upcoming if statement
 		if (startCol > this.column || destCol > this.column)
-			isitoutofrange_col = true;
+			boolOutOfRangeCol = true;
+		// if any of the values are bigger or equal to zero, it is acceptable input
 		if (startRow >= 0)
-			startrow_true = true;
+			boolStartRow = true;
 		if (startCol >= 0)
-			startcol_true = true;
+			boolStartCol = true;
 		if (destRow >= 0)
-			destrow_true = true;
+			boolDestRow = true;
 		if (destCol >= 0)
-			destcol_true = true;
+			boolDestCol = true;
+		
+		// solution to be returned, since I wanted to be specific with the if statements
+		// using if else instead of any else statements, I had to initialize the string
+		// that is to be returned
+		
 		String solution = "";	
-		if(startrow_true && startcol_true && destrow_true && destcol_true && !isitoutofrange_col && !isitoutofrange_row) {//statement is valid
+		if(boolStartRow && boolStartCol && boolDestRow && boolDestCol && !boolOutOfRangeCol && !boolOutOfRangeRow) {//statement is valid
 			// for SouthWest	(down and left)
 			// 			y-axis					x-axis
 			if(startRow >= destRow && startCol >= destCol) {
@@ -113,9 +123,12 @@ public class Map {
 			}
 		}	
 		else {
+			// throw exception if the initial if statements that evaluate
+			// if the inputs were not valid with respect to restrictions in if statement
+			// throw an exception
 			throw new IllegalArgumentException();
-
 		}
+		// return the solution
 		return solution;
 	}
 
@@ -132,17 +145,16 @@ public class Map {
 	 */
 	
 	private String goSouthWest (int startRow, int startCol, int destRow, int destCol , String path) {
-		// Please complete this method
-		// you should decide on what should be returned. This return statement is here to avoid compiler error.
+		// base return statement for recursion 
 		if(startRow == destRow && startCol == destCol) {
 			return path;
-
+		// if the base isn't satisfied, recursively return the coordinate + method for the next step
 		}else{
-			if (startCol > destCol) {
-				startCol--;
-				path = path + "(" + startRow + "," + startCol + ")" + " " + goSouthWest(startRow, startCol, destRow, destCol, path);
-			}else if (startRow > destRow) {
-				startRow--;
+			if (startCol > destCol) { // if startCol is bigger than desired Column,  
+				startCol--;  // negative increment until the desired value is obtained one by one + method for the next step
+				path = path + "(" + startRow + "," + startCol + ")" + " " + goSouthWest(startRow, startCol, destRow, destCol, path); 
+			}else if (startRow > destRow) { // if startRow is bigger than desired Column
+				startRow--; // negative increment until the desired value is obtained one by one + method for the next step
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goSouthWest(startRow, startCol, destRow, destCol, path);
 			}
 		}
@@ -160,26 +172,20 @@ public class Map {
 	 * @return returns a string representing the path to the destination. The format of the output is (x1,y1) (x2,y2) (x3,y3)...
 	 * @pre <code> startRow >= destRow </code> and <code> startCol <= destCol </code>
 	 */
-	// CHANGE IT TO PRIVATE AFTERWARDS !!!!!!!!!
 	private String goSouthEast (int startRow, int startCol, int destRow, int destCol , String path) {
-		// Please complete this method
-		// you should decide on what should be returned. This return statement is here to avoid compiler error.
-		// down and right !!!
-		// else if(startRow >= destRow && startCol <= destCol) {
- 
-		if(startRow == destRow && startCol == destCol) {
+		// base return statement for recursion 
+		if(startRow == destRow && startCol == destCol) { 
 			return path;
+		// if the base isn't satisfied, recursively return the coordinate + method for the next step
 		}else{
-		
-			if (startCol < destCol) {
-				startCol++;
+			if (startCol < destCol) { // if startCol is smaller than desired Column
+				startCol++; // increment one by one and return the location + recursive method call of the next location
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goSouthEast(startRow, startCol, destRow, destCol, path);
-		}	
-			else if (startRow > destRow) {
-				startRow--;
+		}
+			else if(startRow > destRow) { // if startRow is bigger than the desired location of Row
+				startRow--; // negative increment one by one and return the location + recursive method call of the next location
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goSouthEast(startRow, startCol, destRow, destCol, path);
 			}
-	
 		}
 		return path;	
 	}
@@ -196,20 +202,17 @@ public class Map {
 	 * @pre <code> startRow <= destRow </code> and <code> startCol >= destCol </code>
 	 */
 	private String goNorthEast (int startRow, int startCol, int destRow, int destCol , String path) {
-		// Please complete this method
-		// you should decide on what should be returned. This return statement is here to avoid compiler error.
 		if(startRow == destRow && startCol == destCol) {
 			return path;
-
+			// if the base isn't satisfied, recursively return the coordinate + method for the next step
 		}else{
-			if (startCol < destCol) {
-				startCol++;
+			if (startCol < destCol) { // if startCol is smaller than desired location of Column
+				startCol++; // increment one by one and return the location + recursive method call of the next location
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goNorthEast(startRow, startCol, destRow, destCol, path);
-			}else if (startRow < destRow) {
-				startRow++;
+			}else if (startRow < destRow) { // if startRow is smaller than desired Row,
+				startRow++; // increment one by one and return the location + recursive method call of the next location
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goNorthEast(startRow, startCol, destRow, destCol, path);
 			}
-		
 		}
 		return path;
 	}
@@ -226,20 +229,17 @@ public class Map {
 	 * @pre <code> startRow >= destRow </code> and <code> startCol <= destCol </code>
 	 */
 	private String goNorthWest (int startRow, int startCol, int destRow, int destCol , String path) {
-		// Please complete this method
-		// you should decide on what should be returned. This return statement is here to avoid compiler error.
 		if(startRow == destRow && startCol == destCol) {
 			return path;
-
+			// if the base isn't satisfied, recursively return the coordinate + method for the next step
 		}else{
-			if (startCol > destCol) {
-				startCol--;
+			if (startCol > destCol) { // if startCol is bigger than desired location of Column
+				startCol--; // negative increment one by one and return the location + recursive method call of the next location
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goNorthWest(startRow, startCol, destRow, destCol, path);
-		   }else if (startRow < destRow) {
-				startRow++;
+		   }else if (startRow < destRow) { // if startRow is smaller than desired Row,
+				startRow++; // increment one by one and return the location + recursive method call of the next location
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goNorthWest(startRow, startCol, destRow, destCol, path);
 			}
-		
 		}
 		return path;
 	}
@@ -255,54 +255,60 @@ public class Map {
 	}
 	
 	private boolean findPathHelper(int currRow, int currCol) {
+		// base function for the recursive algorithm
+		// if the car is out of the city 
 		if(currRow == 0 || currCol == 0 || currRow == this.row - 1  || currCol == this.column - 1) {
+			// add the last element of the path into the list and return true going back in the recursive methods that are called
 			foundPath += " (" + currRow + "," + currCol + ")";
-			return true;
-		}else{
-		int x = (int)(Math.random() * ((3) + 1));
-		if(x == 0) {
-			if(map[currRow + 1][currCol]) {
-				map[currRow][currCol] = false; // current location is false on map
-					foundPath += " (" + currRow + "," + currCol + ")";
-					System.out.println("whatever 1");
-					return findPathHelper(currRow + 1, currCol);
-				}else{
-					return false;
-					}
+			return true; 
+			
+		}else{ // if the base case isn't true, if the car is not out of the city yet
+			// randomly generate an integer from 0 to 3
+			// the randomly generated integer responds to either up, down, left or right
+			int x = (int)(Math.random() * ((3) + 1)); 
+			
+			if(x == 0) { // if random integer is 0, try to go up
 				
-		}else if(x == 1) {
-				if(map[currRow - 1][currCol]) {
-					map[currRow][currCol] = false;
-					foundPath += " (" + currRow + "," + currCol + ")";
-					System.out.println("whatever2");
-					return findPathHelper(currRow - 1, currCol);
-					
+				if(map[currRow + 1][currCol]) { // only go up if the car has not been there before (the entry in the boolean matrix is false)		
+					map[currRow][currCol] = false; // current location is marked false on map because we were able to move
+						foundPath += " (" + currRow + "," + currCol + ")"; // add the Path into the foundPath List
+						return findPathHelper(currRow + 1, currCol); // return the next location's boolean state for the car, recursively. 
 				}else{
-					return false;
-				}
+						return false; // if false is returned, the list and the matrix are reset. This causes it to call findPath with the original/initial arguments
+					 }
 				
-		}else if(x == 2) {
-				if(map[currRow][currCol + 1]) {
-					map[currRow][currCol] = false;
-					foundPath += " (" + currRow + "," + currCol + ")";
-					System.out.println("whatever3");
-					return findPathHelper(currRow, currCol + 1);
-					
+	 }else if(x == 1) { // if random integer is one, try to go down
+			
+				if(map[currRow - 1][currCol]) {  // only go down if the car has not been there before (the entry in the boolean matrix is false)		
+						map[currRow][currCol] = false; // current location is marked false on map because we were able to move
+						foundPath += " (" + currRow + "," + currCol + ")"; // add the Path into the foundPath List
+						return findPathHelper(currRow - 1, currCol); // return the next location's boolean state for the car, recursively. 
 				}else{
-					return false;
-				}
-		}else{
-				if(map[currRow][currCol - 1]) {
-					map[currRow][currCol] = false;
-					foundPath += " (" + currRow + "," + currCol + ")";
-					System.out.println("whatever4");
-					return findPathHelper(currRow, currCol - 1);
+						return false; // if false is returned, the list and the matrix are reset. This causes it to call findPath with the original/initial arguments
+					 }
+				
+		}else if(x == 2) { // if random integer is two, try to go right
+			
+				if(map[currRow][currCol + 1]) { // only go right if the car has not been there before (the entry in the boolean matrix is false)
+					map[currRow][currCol] = false; // current location is marked false on map because we were able to move
+					foundPath += " (" + currRow + "," + currCol + ")"; // add the Path into the foundPath List
+					return findPathHelper(currRow, currCol + 1); // return the next location's boolean state for the car, recursively. 
 				}else{
-					return false;
+					 	return false; // if false is returned, the list and the matrix are reset. This causes it to call findPath with the original/initial arguments
+					 }
+				
+		}else{ // only one more value is left out of if/if-else statements which is 3. if random integer is 3, try to go left
+			
+				if(map[currRow][currCol - 1]) { // only go left if the car has not been there before (the entry in the boolean matrix is false)
+					map[currRow][currCol] = false; // current location is marked false on map because we were able to move
+					foundPath += " (" + currRow + "," + currCol + ")"; // add the Path into the foundPath List
+					return findPathHelper(currRow, currCol - 1);  // return the next location's boolean state for the car, recursively. 
+				}else{
+					return false; // if false is returned, the list and the matrix are reset. This causes it to call findPath with the original/initial arguments
 				}
 			}	
 		}
-}	
+	}	
 	
 	/**
 	 * This method find a path from (startRow, startCol) to a border point of the city. 
