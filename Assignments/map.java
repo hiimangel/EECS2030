@@ -16,7 +16,7 @@ BY FILLING THE GAPS,YOU ARE SIGNING THE ABOVE STATEMENTS.
 
 Full Name: Alp Baran Sirek
 Student Number: 217329251
-Course Section:E
+Course Section: E
 */
 
 package Assignment1;
@@ -44,15 +44,6 @@ public class Map {
 		this.row = row; // row initialization for the grid
 		this.column = column; // column initialization for the grid
 		this.map = new boolean[row][column]; // create a boolean matrix with using the row and column argument of the constructor
-		
-		// Setting every entry of the boolean matrix to true, indicating that the cop car has not been deployed there
-		// if any entry is false, it is not a path that can be taken by the car, if true, can be passed through
-		for(int i = 0; i < row; i++) {
-			for(int k = 0; k < column; k++) {
-				this.map[i][k] = true;
-			}
-		}
-		
 	}
 	/**
 	 * This method checks the correctness of the input parameters. If the preconditions are not met 
@@ -70,12 +61,12 @@ public class Map {
 	 */
 	public String getPath (int startRow, int startCol, int destRow, int destCol , String path) {
 		// initializations of booleans to check for possible errors
-		boolean boolStartRow  = false; 
-		boolean boolStartCol = false;
-		boolean boolDestRow = false;
-		boolean boolDestCol = false;
-		boolean boolOutOfRangeRow = false;
-		boolean boolOutOfRangeCol = false;
+		boolean boolStartRow  = false; // the start Row boolean variable
+		boolean boolStartCol = false; // the start Column boolean variable
+		boolean boolDestRow = false; // the Destination Row boolean variable
+		boolean boolDestCol = false; // the Destination Column boolean variable
+		boolean boolOutOfRangeRow = false; // boolean variable to check if Row value is out of maximum range - that was defined in the constructor -
+		boolean boolOutOfRangeCol = false; // boolean variable to check if Column value is out of maximum - range that was defined in the constructor -
 		
 		// if the startRow or destRow argument is larger than max of grid 
 		// boolean variable is true so that error can be thrown in the upcoming if statement
@@ -121,8 +112,7 @@ public class Map {
 			else if(startRow <= destRow && startCol >= destCol) {
 				solution = this.goNorthWest(startRow, startCol, destRow, destCol, path);
 			}
-		}	
-		else {
+		}else{
 			// throw exception if the initial if statements that evaluate
 			// if the inputs were not valid with respect to restrictions in if statement
 			// throw an exception
@@ -149,7 +139,7 @@ public class Map {
 		if(startRow == destRow && startCol == destCol) {
 			return path;
 		// if the base isn't satisfied, recursively return the coordinate + method for the next step
-		}else{
+	   }else{
 			if (startCol > destCol) { // if startCol is bigger than desired Column,  
 				startCol--;  // negative increment until the desired value is obtained one by one + method for the next step
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goSouthWest(startRow, startCol, destRow, destCol, path); 
@@ -318,13 +308,14 @@ public class Map {
 	 * @return is a path from (starting row, staring col) to a border point of the city. The format of the output is (x1,y1) (x2,y2) (x3,y3)...
 	 */
 	public String findPath (int startRow, int startCol) {
-		clearGridAndPath();
-		while(!findPathHelper(startRow, startCol)) {
-			clearGridAndPath();
-			this.foundPath = "";
+		clearGridAndPath(); // Setting every entry in the matrix to true for the game to begin
+		// indirect recursion, while our boolean return type helper function keeps returning true, meaning that it didn't hit an intersection it was at before, skip the while condition
+		// but if it return false, everything is set to default and the original arguments are put back in the helper function so that the game starts over from the beginning
+		while(!findPathHelper(startRow, startCol)) { 
+			clearGridAndPath(); // set every entry in the matrix to true, reset how the car impacted the boolean matrix (map)
+			this.foundPath = ""; // set our foundPath variable to an empty string so that the returned String is only the path that passed the experiment
 		}
-		System.out.println(foundPath);
-		return this.foundPath;
+		return this.foundPath; // while loop is done, car was able to get out of the city, return the String representation of the path car traveled
 	}
 				
 }// end of class
