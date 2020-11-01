@@ -32,6 +32,8 @@ public class Map {
 	boolean [][] map; 
 	private int row;
 	private int column;
+	String foundPath = "";
+	
 	/**
 	 * This is the constructor that constructs the city map, 
 	 * which is a grid of row by column.
@@ -39,11 +41,12 @@ public class Map {
 	 * @param column is the number of north-south streets of the city
 	 */
 	public Map(int row, int column) {
-		// Please implement the constructor
-		this.row = row;
-		this.column = column;
-		this.map = new boolean[row][column];
+		this.row = row; // row initialization for the grid
+		this.column = column; // column initialization for the grid
+		this.map = new boolean[row][column]; // create a boolean matrix with using the row and column argument of the constructor
 		
+		// Setting every entry of the boolean matrix to true, indicating that the cop car has not been deployed there
+		// if any entry is false, it is not a path that can be taken by the car, if true, can be passed through
 		for(int i = 0; i < row; i++) {
 			for(int k = 0; k < column; k++) {
 				this.map[i][k] = true;
@@ -68,7 +71,7 @@ public class Map {
 	public String getPath (int startRow, int startCol, int destRow, int destCol , String path) {
 		// Please complete this method
 		// you should decide on what should be returned. This return statement is here to avoid compiler error.
-		boolean startrow_true  = false;
+		boolean startrow_true  = false; //
 		boolean startcol_true = false;
 		boolean destrow_true = false;
 		boolean destcol_true = false;
@@ -88,19 +91,22 @@ public class Map {
 			destcol_true = true;
 		String solution = "";	
 		if(startrow_true && startcol_true && destrow_true && destcol_true && !isitoutofrange_col && !isitoutofrange_row) {//statement is valid
-			//for southwest assagi sola dogru (down and left)
+			// for SouthWest	(down and left)
+			// 			y-axis					x-axis
 			if(startRow >= destRow && startCol >= destCol) {
 				solution =  this.goSouthWest(startRow, startCol, destRow, destCol, path);
 			}
-			// for southeast assagi saga dogru (down and right)	
+			// for SouthEast	(down and right)
+			// 			y-axis					x-axis
 			else if(startRow >= destRow && startCol <= destCol) {
 				solution = this.goSouthEast(startRow, startCol, destRow, destCol, path);
 			}
-			// for northeast yukari sola dogru (up and left)	
+			// for NorthEast	(up and left)	
+			// 			y-axis					x-axis
 			else if(startRow <= destRow && startCol <= destCol) {
 				solution = this.goNorthEast(startRow, startCol, destRow, destCol, path);
 			}
-			// for northwest yukari saga dogru (up and right)	
+			// for northwest	(up and right)	
 			// 			y-axis					x-axis
 			else if(startRow <= destRow && startCol >= destCol) {
 				solution = this.goNorthWest(startRow, startCol, destRow, destCol, path);
@@ -125,7 +131,7 @@ public class Map {
 	 * @pre <code> startRow >= destRow </code> and <code> startCol >= destCol </code>
 	 */
 	
-	public String goSouthWest (int startRow, int startCol, int destRow, int destCol , String path) {
+	private String goSouthWest (int startRow, int startCol, int destRow, int destCol , String path) {
 		// Please complete this method
 		// you should decide on what should be returned. This return statement is here to avoid compiler error.
 		if(startRow == destRow && startCol == destCol) {
@@ -134,11 +140,9 @@ public class Map {
 		}else{
 			if (startCol > destCol) {
 				startCol--;
-				map[startRow][startCol] = false;
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goSouthWest(startRow, startCol, destRow, destCol, path);
 			}else if (startRow > destRow) {
 				startRow--;
-				map[startRow][startCol] = false;
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goSouthWest(startRow, startCol, destRow, destCol, path);
 			}
 		}
@@ -157,7 +161,7 @@ public class Map {
 	 * @pre <code> startRow >= destRow </code> and <code> startCol <= destCol </code>
 	 */
 	// CHANGE IT TO PRIVATE AFTERWARDS !!!!!!!!!
-	public String goSouthEast (int startRow, int startCol, int destRow, int destCol , String path) {
+	private String goSouthEast (int startRow, int startCol, int destRow, int destCol , String path) {
 		// Please complete this method
 		// you should decide on what should be returned. This return statement is here to avoid compiler error.
 		// down and right !!!
@@ -169,12 +173,10 @@ public class Map {
 		
 			if (startCol < destCol) {
 				startCol++;
-				map[startRow][startCol] = false;
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goSouthEast(startRow, startCol, destRow, destCol, path);
 		}	
 			else if (startRow > destRow) {
 				startRow--;
-				map[startRow][startCol] = false;
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goSouthEast(startRow, startCol, destRow, destCol, path);
 			}
 	
@@ -193,7 +195,7 @@ public class Map {
 	 * @return returns a string representing the path to the destination. The format of the output is (x1,y1) (x2,y2) (x3,y3)...
 	 * @pre <code> startRow <= destRow </code> and <code> startCol >= destCol </code>
 	 */
-	public String goNorthEast (int startRow, int startCol, int destRow, int destCol , String path) {
+	private String goNorthEast (int startRow, int startCol, int destRow, int destCol , String path) {
 		// Please complete this method
 		// you should decide on what should be returned. This return statement is here to avoid compiler error.
 		if(startRow == destRow && startCol == destCol) {
@@ -202,11 +204,9 @@ public class Map {
 		}else{
 			if (startCol < destCol) {
 				startCol++;
-				map[startRow][startCol] = false;
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goNorthEast(startRow, startCol, destRow, destCol, path);
 			}else if (startRow < destRow) {
 				startRow++;
-				map[startRow][startCol] = false;
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goNorthEast(startRow, startCol, destRow, destCol, path);
 			}
 		
@@ -225,7 +225,7 @@ public class Map {
 	 * @return returns a string representing the path to the destination. The format of the output is (x1,y1) (x2,y2) (x3,y3)...
 	 * @pre <code> startRow >= destRow </code> and <code> startCol <= destCol </code>
 	 */
-	public String goNorthWest (int startRow, int startCol, int destRow, int destCol , String path) {
+	private String goNorthWest (int startRow, int startCol, int destRow, int destCol , String path) {
 		// Please complete this method
 		// you should decide on what should be returned. This return statement is here to avoid compiler error.
 		if(startRow == destRow && startCol == destCol) {
@@ -234,17 +234,75 @@ public class Map {
 		}else{
 			if (startCol > destCol) {
 				startCol--;
-				map[startRow][startCol] = false;
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goNorthWest(startRow, startCol, destRow, destCol, path);
 		   }else if (startRow < destRow) {
 				startRow++;
-				map[startRow][startCol] = false;
 				path = path + "(" + startRow + "," + startCol + ")" + " " + goNorthWest(startRow, startCol, destRow, destCol, path);
 			}
 		
 		}
 		return path;
 	}
+	
+	
+	private void clearGridAndPath() {
+		for(int y = 0; y < row; y++) {
+			for(int x = 0; x < column; x++) {
+				// false means position has been visited so resetting the grid by setting every entry to true
+				this.map[y][x] = true;
+			}
+		}
+	}
+	
+	private boolean findPathHelper(int currRow, int currCol) {
+		if(currRow == 0 || currCol == 0 || currRow == this.row - 1  || currCol == this.column - 1) {
+			foundPath += " (" + currRow + "," + currCol + ")";
+			return true;
+		}else{
+		int x = (int)(Math.random() * ((3) + 1));
+		if(x == 0) {
+			if(map[currRow + 1][currCol]) {
+				map[currRow][currCol] = false; // current location is false on map
+					foundPath += " (" + currRow + "," + currCol + ")";
+					System.out.println("whatever 1");
+					return findPathHelper(currRow + 1, currCol);
+				}else{
+					return false;
+					}
+				
+		}else if(x == 1) {
+				if(map[currRow - 1][currCol]) {
+					map[currRow][currCol] = false;
+					foundPath += " (" + currRow + "," + currCol + ")";
+					System.out.println("whatever2");
+					return findPathHelper(currRow - 1, currCol);
+					
+				}else{
+					return false;
+				}
+				
+		}else if(x == 2) {
+				if(map[currRow][currCol + 1]) {
+					map[currRow][currCol] = false;
+					foundPath += " (" + currRow + "," + currCol + ")";
+					System.out.println("whatever3");
+					return findPathHelper(currRow, currCol + 1);
+					
+				}else{
+					return false;
+				}
+		}else{
+				if(map[currRow][currCol - 1]) {
+					map[currRow][currCol] = false;
+					foundPath += " (" + currRow + "," + currCol + ")";
+					System.out.println("whatever4");
+					return findPathHelper(currRow, currCol - 1);
+				}else{
+					return false;
+				}
+			}	
+		}
+}	
 	
 	/**
 	 * This method find a path from (startRow, startCol) to a border point of the city. 
@@ -254,64 +312,14 @@ public class Map {
 	 * @return is a path from (starting row, staring col) to a border point of the city. The format of the output is (x1,y1) (x2,y2) (x3,y3)...
 	 */
 	public String findPath (int startRow, int startCol) {
-		
-		String path = "(" + startRow + "," + startCol + ")";
-		if(startRow == 0 || startCol == 0 || startRow == this.row - 1  || startCol == this.column - 1) {
-			path = "(" + startRow + "," + startCol + ")";	
-		}else{
-			int x = (int)(Math.random() * ((3) + 1));
-			System.out.println(x);
-			// String[] paths = {findPath(startRow + 1, startCol), findPath(startRow - 1, startCol), findPath(startRow, startCol + 1), findPath(startRow, startCol - 1)};
-		
-			if(x == 0) {
-				if(map[startRow + 1][startCol]) {
-					map[startRow][startCol] = false;
-					startRow = startRow + 1;
-					path = path + " "+ findPath(startRow, startCol);
-				}else{
-					return findPath(startRow, startCol);
-				}	
-			}else if(x == 1) {
-				if(map[startRow - 1][startCol]) {
-					map[startRow][startCol] = false;
-					startRow = startRow - 1;
-					path = path + " " + findPath(startRow, startCol);
-				}else {
-					path = findPath(startRow, startCol);
-				}
-			}else if(x == 2) {
-				if(map[startRow][startCol + 1]) {
-					map[startRow][startCol] = false;
-					startCol = startCol + 1;
-					path = path + " "+findPath(startRow, startCol);
-				}else {
-					path = findPath(startRow, startCol);
-				}
-			}else if(x == 3) {
-				if(map[startRow][startCol - 1]) {
-					map[startRow][startCol] = false;
-					startCol = startCol - 1;
-					path =  path + " "+ findPath(startRow, startCol);
-				}else{
-					path = findPath(startRow, startCol);
-				}
-			}
+		clearGridAndPath();
+		while(!findPathHelper(startRow, startCol)) {
+			clearGridAndPath();
+			this.foundPath = "";
 		}
-		
-		/*if(!map[startRow + 1][startCol] && !map[startRow - 1][startCol] && !map[startRow][startCol + 1] && !map[startRow][startCol - 1] || path.substring(path.length() - 1) == "e") {
-			
-			 String w = path.substring(path.indexOf('(') + 1 , path.indexOf(','));	
-			 String y = path.substring(path.indexOf(',') + 1 , path.indexOf(')'));
-			 System.out.println(w + "  whatever -x");
-			 System.out.println(y + "  whatever -y");
-			 map[startRow][startCol] = true;
-			 path = findPath(Integer.parseInt(w), Integer.parseInt(y));
-		}
-		
-		*/
-		return path;
+		System.out.println(foundPath);
+		return this.foundPath;
 	}
-									
 				
 }// end of class
 	
