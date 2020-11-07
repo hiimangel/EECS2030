@@ -99,7 +99,6 @@ public class OwnedPiggyBank {
 			Coin newCoin = new Coin(coinInList);
 			this.coinsOfOwner.add(newCoin);
 			*/
-		
 		for(Coin coinInList: coins) {
 			this.coinsOfOwner.add(coinInList);
 			}
@@ -143,7 +142,7 @@ public class OwnedPiggyBank {
 	 */
 	public Coin remove(Owner user, Coin coin) {
 		
-		if (user.getName() == this.owner.getName()) {
+		if (user.equals(this.owner)) {
 			for(Coin individualCoin : this.coinsOfOwner) {
 				if(individualCoin == coin) {
 					return coin;
@@ -173,7 +172,7 @@ public class OwnedPiggyBank {
 	 */
 	public List<Coin> removeCoins(Owner user, int value) {
 		ArrayList<Coin> toBeReturned = new ArrayList<>();
-		if (user.getName() == this.owner.getName()) {
+		if (user.equals(this.owner)) {
 			Collections.sort(this.coinsOfOwner); // sort so that highest value is last index
 			int i = this.coinsOfOwner.size() - 1; // get the last index of the highest value
 			while(value != 0) { // while our value is higher than 0
