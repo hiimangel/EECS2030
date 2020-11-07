@@ -17,6 +17,10 @@ import java.util.List;
  * In other words, the piggy bank and its owner form an
  * aggregation.
  */
+
+// Alp Baran Sirek
+// 217329251
+
 public class OwnedPiggyBank {
 	/*
 	 * YOU NEED A FIELD HERE TO HOLD THE COINS OF THIS PIGGY BANK
@@ -50,7 +54,8 @@ public class OwnedPiggyBank {
 	 */
 	public OwnedPiggyBank(OwnedPiggyBank other) {
 		this.owner = other.getOwner();
-		this.coinsOfOwner = other.coinsOfOwner;
+		ArrayList<Coin> toBeCopied = new ArrayList<>(other.coinsOfOwner);
+		this.coinsOfOwner = toBeCopied;
 		
 	}
 
@@ -80,7 +85,7 @@ public class OwnedPiggyBank {
 	 * current owner of this piggy bank
 	 */
 	public void changeOwner(Owner currentOwner, Owner newOwner) {
-			if(currentOwner.getName() == this.owner.getName()) {
+			if(currentOwner.equals(this.owner)) {
 				this.owner = newOwner;
 			}else {
 				throw new IllegalArgumentException();
