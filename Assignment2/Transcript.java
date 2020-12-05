@@ -43,6 +43,7 @@ public class Transcript {
 	 * This the the constructor for Transcript class that 
 	 * initializes its instance variables and call readFie private
 	 * method to read the file and construct this.grade.
+	 * 
 	 * @param inFile is the name of the input file.
 	 * @param outFile is the name of the output file.
 	 */
@@ -106,7 +107,16 @@ public class Transcript {
 	}
 	
 	
-	
+	/**
+	 * Initializes assessments, courses and students based using the grade field which contains
+	 * inputs in the form of lines for each course entry for a student. This method builds students
+	 * and the courses that they have taken with all the assessment entries and returns an ArrayList 
+	 * of the students instantiated during the process
+	 * 
+	 * @return
+	 * 		Returns an ArrayList of type Student that contains all the students with their course entries from 
+	 * 		the text file input
+	 */
 	public ArrayList<Student> buildStudentArray(){
 		ArrayList<Student> students = new ArrayList<>();
 		
@@ -129,8 +139,7 @@ public class Transcript {
 				
 				if(studentNumber == stuNo) {
 					// Create course and add the course into the temporary Student
-					Course course = new Course(courseName, assessmentHelper(entryDel), weightOfCourse);
-					tempStu.addCourse(course);
+					tempStu.addCourse(new Course(courseName, assessmentHelper(entryDel), weightOfCourse));
 					// set the name for the student, it will be repetitive which if there is an issue,
 					// it will print the same name for different students //<--SELF NOTE--
 					tempStu.setName(name);
@@ -146,7 +155,18 @@ public class Transcript {
 		return students;
 	}
 	
-	
+	/**
+	 * Forms a string/text representation of a report -of all the students 
+	 * and the courses they have taken with all their assignments and their GPA's as well
+	 * as their individual average for that course.
+	 * 
+	 * @param students
+	 * 			ArrayList of students formed with respect to the input
+	 * @throws InvalidTotalException
+	 * 			Throws an exception if one of the students has an average or the course evaluation 
+	 * 			has an error due to possibly being above the maximum limit of what a student is 
+	 * 			statistically able to achieve. This exception is thrown due to the weightedGPA()
+	 */
 	void printTranscript(ArrayList<Student> students) throws InvalidTotalException{
 		for(Student student : students) {
 			System.out.println(student.getName() + '\t' + student.getStudentNo());
@@ -166,8 +186,6 @@ public class Transcript {
 			System.out.println("GPA: " + student.weightedGPA());
 			System.out.println();
 		}
-		
-		
 	}
 	
 	public void Build() throws InvalidTotalException{
@@ -204,35 +222,71 @@ class Student{
 	private ArrayList<Course> courseTaken;
 	private ArrayList<Double> finalGrade;
 	
+	/**
+	 * Initializes a Student type object by also initializing empty ArrayList
+	 * fields
+	 */
 	public Student() {
 		this.courseTaken = new ArrayList<>();
 		this.finalGrade = new ArrayList<>();
 	}
 	
-	
+	/**
+	 * Initializes a Student type object using the parameters name, studentID and the courses
+	 * that the student has taken which is in the form of an ArrayList
+	 * 
+	 * @param name
+	 * 			the name of the student
+	 * @param studentID
+	 * 			the studentID of the student
+	 * @param courses
+	 * 			the courses that the student is currently taking
+	 * 
+	 */
 	public Student(String name, String studentID, ArrayList<Course> courses) {
 		this.name = name;
 		this.studentID = studentID;
-		this.courseTaken = new ArrayList<>(courses);
+		this.courseTaken = new ArrayList<>();
+		for(Course course : courses) {
+			this.courseTaken.add(new Course(course));
+		}
 	}	
+	
+	/**
+	 *	Calculates the total average of the assessments based on the weights
+	 * and the values of them and adds the final evaluated grade into the finalGrade
+	 * ArrayList
+	 * 
+	 * @param grades
+	 * 				grades of the assessments of a course
+	 * 			
+	 * @param weights
+	 * 				weights of the assessments of a course
+	 */				
 	
 	public void addGrade(ArrayList<Double> grades, ArrayList<Integer> weights) {
 		double sum = 0; 
 		
-		for(int i = 0; i < grades.size(); i++) {
-			sum = sum + grades.get(i) * ((double)weights.get(i)/100);
-		}
-		//for(Course course : courseTaken) {
-		//	System.out.println(course.getCode());
-		//}
-		// FIND A WAY TO TRANSLATE THIS LONG INTO DOUBLE FOR THE MEMORY KILL ME 
+		for(int i = 0; i < grades.size(); i++) {sum = sum + grades.get(i) * ((double) weights.get(i)/100);}
+		
 		double temp = Math.round(sum*10);
 		double finalValueOfSum = temp/10;
-		
-		//System.out.println(finalValueOfSum);
+
 		finalGrade.add(finalValueOfSum);
 		
 	}
+	
+	/**
+	 * 	Private helper method that evaluates the students GPA based on York University's
+	 * standards
+	 * 
+	 * @param mark
+	 * 		The grade that the student has out of 100
+	 * @return
+	 * 		Returns the GPA representation based on York University's standards which is out of 9
+	 * @throws InvalidTotalException
+	 * 		Throws an exception if the total mark is more than 100
+	 */
 	
 	private double yorkGPA(double mark) throws InvalidTotalException {
 		
@@ -251,8 +305,18 @@ class Student{
 		else{return 9.0;}
 	}
 	
-	public double weightedGPA() throws InvalidTotalException{
-		ArrayList<Double> finalYorkGpa = new ArrayList<>();
+	/**
+	 * 
+	 * 
+	 * @return
+	 * 		returns the final GPA the student has based on the courses
+	 * 		the individual has taken
+	 * @throws InvalidTotalException
+	 * 		throws exception due to yorkGPA(double mark) method, yorkGPA throws 
+	 * 		an exception if the student final grade is more than 100	
+	 */
+	public double weightedGPA(){
+
 		int i = 0;
 		double credits = 0;
 		double sumOfGrades = 0;
@@ -260,37 +324,103 @@ class Student{
 			double credit = course.getCredit();
 			credits = credits + credit;
 			double finalGradeOfStudent = this.finalGrade.get(i);
-			double GPA = yorkGPA(finalGradeOfStudent);
-			sumOfGrades = sumOfGrades + GPA * credit;
+			try {
+				double GPA = yorkGPA(finalGradeOfStudent);
+				sumOfGrades = sumOfGrades + GPA * credit;
+			}catch(InvalidTotalException e) {
+				System.out.println("Invalid Total");
+			}
+			
 			i++;
 		}
-		
 		double finalGPAunaltered = sumOfGrades / credits;
 		double temp = Math.round(finalGPAunaltered*10);
 		double finalGPA = temp/10;
 		
-		
 		return finalGPA;
-		
 	}
+
+	/**
+	 * Takes in a course object as a parameter and creates a new copy of that
+	 * course and adds that to the courseTaken field which are the courses that the
+	 * student has taken
+	 * 
+	 * @param course
+	 * 		The course that the student is taking
+	 */
 	public void addCourse(Course course){
-		courseTaken.add(course);
+		courseTaken.add(new Course(course));
 	}
+	
+	/**
+	 * Sets the student's name
+	 * 
+	 * @param name
+	 * 		Name of the student
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	/**
+	 * Sets the student's student ID
+	 * 
+	 * @param studentNumber
+	 * 		The student ID reference for the student
+	 */
 	public void setStudentNo(int studentNumber) {
 		this.studentID = Integer.toString(studentNumber); 
 	}
+	
+	/**
+	 * Return the finalGrade ArrayList which are the final grades the student
+	 * has received
+	 * 
+	 * @return
+	 * 		Returns the final grades of the student parallel to the courses
+	 * 	   the student has taken
+	 */
 	public ArrayList<Double> getfinalGrade(){
-		return this.finalGrade;
+		ArrayList<Double> temp = new ArrayList<>();
+		for(Double tempVal : this.finalGrade) {
+			temp.add(tempVal);
+		}
+		return temp;
 	}
+	
+	
+	/**
+	 * Returns the courses the student has taken, the returned value is a 
+	 * new ArrayList of type Course that has copies of the Course objects 
+	 * rather than the course itself for data leak
+	 * 
+	 * @return
+	 * 		Returns an ArrayList of courses that the student has taken
+	 */
 	public ArrayList<Course> getCourseTaken(){
-		return this.courseTaken;
+		ArrayList<Course> temp = new ArrayList<>();
+		for(Course course : this.courseTaken) {
+			temp.add(new Course(course));
+		}
+		return temp;
 	}
+	
+	/**
+	 * Getter for the Student Name
+	 * 
+	 * @return
+	 * 		Returns the name of the student
+	 */
 	public String getName() {
 		return this.name;
 	}
+	
+	/**
+	 * Getter for the Student Number
+	 * 
+	 * @return
+	 * 		Returns the student Number of the student
+	 */		
 	public String getStudentNo() {
 		return this.studentID;
 	}
@@ -304,18 +434,43 @@ class Course{
 	private ArrayList<Assessment> assessments;
 	private double credit;
 	
+	/**
+	 * Initializes an empty course with an empty ArrayList for assessments
+	 */
 	public Course() {
 		this.assessments = new ArrayList<>(); 
 	}
 		
-	
+	/**
+	 * Initializes a Course instance where the course name/code is instantiated, the assessments are individually copied and 
+	 * put in a new ArrayList Assessment type, the credit is defined for the instance at last
+	 * 
+	 * @param code
+	 * 			The name/code of the course
+	 * @param assessments
+	 * 			ArrayList type Assessment which carries all the assessments of the instantiated course
+	 * @param credit
+	 * 			The credit of the course
+	 */
 	public Course(String code, ArrayList<Assessment> assessments, double credit) {
 		this.code = code;
-		this.assessments = new ArrayList<>(assessments);
+		ArrayList<Assessment> temp = new ArrayList<>();
+		
+		for(Assessment assessment : assessments) {
+			temp.add(Assessment.getInstance(assessment.getType(), assessment.getWeight()));
+		}
+		
+		this.assessments = temp;
 		this.credit = credit;
 		
 	}
-	
+	/**
+	 * The copy constructor of Course, it created a new ArrayList and new Assessment objects for each
+	 * assessment in the assessments field of the instance that is wanted to be copied
+	 * 
+	 * @param course
+	 * 			The course instance that is wanted to be copied
+	 */
 	public Course(Course course) {
 		this.assessments = new ArrayList<Assessment>();
 		for(Assessment assessment : course.assessments) {
@@ -324,16 +479,42 @@ class Course{
 		this.code = course.code;
 		this.credit = course.credit;
 	}
+	
+	/**
+	 * Getter for assessments of this instance (Course)
+	 * 
+	 * @return
+	 *		Returns a new ArrayList assessment type with the Assessments being individually copied inside
+	 */		
 	public ArrayList<Assessment> getAssessments(){
-		return new ArrayList<Assessment>(assessments);
+		ArrayList<Assessment> temp = new ArrayList<>();
+		for(Assessment assessment : this.assessments) {
+			temp.add(Assessment.getInstance(assessment.getType(), assessment.getWeight()));
+		}
+		return temp; 
 	}
+	
+	/**
+	 * Getter method for name/code of the Course
+	 * 
+	 * @return
+	 * 		Returns the name/code of the Course
+	 */
 	public String getCode() {
 		return this.code;
 	}
+	
+	/**
+	 * Getter for Credit of the Course
+	 * 
+	 * @return
+	 * 		Return the credit of the Course
+	 */
 	public double getCredit() {
 		return this.credit;
 	}
-}
+	
+}//end of Course Class
 
 
 class Assessment{
@@ -343,22 +524,66 @@ class Assessment{
 	private Assessment() {
 	
 	}
+	/**
+	 * Instantiates an Assessment object which only carries the type of it and the
+	 * weight of that assessment
+	 * 
+	 * @param type
+	 * 			The type of assessment, practical or exam
+	 * @param weight
+	 * 			The weight of the assessment with respect to total possible grade for a course instance
+	 */
 	private Assessment(char type, int weight) {
 		this.type = type;
 		this.weight = type;
 	}
 
+	/**
+	 * The public static factory method for Assessment, the actual Constructor is hidden using private but 
+	 * this method can be used to instantiate a new instance/object of type Assessment
+	 * 
+	 * @param type
+	 * 			The type of assessment, practical or exam
+	 * @param weight
+	 * 			The weight of the assessment with respect to total possible grade for a course instance
+	 * @return
+	 * 		Returns an instance of Assessment, an Assessment object
+	 */
 	public static Assessment getInstance(char type, int weight) {
 		return new Assessment(type, weight);
-
 	}
+	
+	/**
+	 * Getter method for type
+	 * 
+	 * @return
+	 * 		Returns the type of this Assessment
+	 */
 	public char getType() {
 		return this.type;
 	}
+	
+	/**
+	 * Getter method for Weight
+	 * 
+	 * @return
+	 * 		Returns the weight for this Assessment
+	 */
 	public int getWeight() {
 		return this.weight;
 	}
 	
+	/**
+	 * Indicates whether some other object is "equal to" this one.
+	 * @return
+	 * 	 	The conditions for the object to be !!different!! are as follows:
+	 * 			if this != argument or,
+	 * 			if argument != null a
+	 * 			if argument's class != instance of this
+	 * 			if the fields of this != fields of argument
+	 * 		If these conditions fail, this method will return true, if not will return false
+	 * 
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) {
