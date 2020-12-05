@@ -55,12 +55,19 @@ public class Transcript {
 		
 	}// end of Transcript constructor
 	
+	/**
+	 * This is a helper function which generates the list of assessments to be plugged in and copied in the course instance when
+	 * being created.
+	 * 
+	 * @param line
+	 * 		Parsed version of the entry input (grade field of transcript class)
+	 * @return
+	 * 		Returns an ArrayList type Assessment to be used for the instantiation of Course
+	 */
 	private ArrayList<Assessment> assessmentHelper(String[] line) {
 		// Assessments
 		ArrayList<Assessment> assessments = new ArrayList<>();
 		for(int i = 3; i < line.length - 1; i++) {
-			// individual assessments is ---entryDel[i]---
-			//System.out.println(line[i]);
 			
 			int weight = Integer.parseInt(line[i].substring(1, line[i].indexOf('(')));
 			char typeOfAssess = line[i].charAt(0);
@@ -71,7 +78,15 @@ public class Transcript {
 		return assessments;
 	}
 	
-	
+	/**
+	 * This is a helper function which counts the students and goes over grade (field of transcript), in order to 
+	 * recognize and classify students without any replication based on the student numbers provided in the input.
+	 * 
+	 * @param field
+	 * 			The field of transcript class which contains the input/text file in form of an object
+	 * @return
+	 * 		Returns an ArrayList type Integer containing the student numbers of the students with no replicas
+	 */
 	private ArrayList<Integer> countStudents(ArrayList<Object> field) {
 		
 		ArrayList<Integer> studentNo = new ArrayList<>();
@@ -86,7 +101,15 @@ public class Transcript {
 		}
 		return studentNo;
 	}
-	
+	/**
+	 * This is a helper function which returns the grades that the student received for the course which
+	 * the entry is via input/line of input. The list returned is parallel with the list containing weights.
+	 * 
+	 * @param entryDel
+	 * 			Entry from the input, an individual line from the field named grade in Transcript class
+	 * @return
+	 * 		Returns an ArrayList type Double which carries the values/marks received from the assessments
+	 */		
 	private ArrayList<Double> gradeReturner(String[] entryDel){
 		ArrayList<Double> grades = new ArrayList<>();
 		for(int i = 3; i < entryDel.length - 1; i++) {
@@ -96,6 +119,17 @@ public class Transcript {
 		return grades;
 	}
 	
+	/**
+	 * This is a helper function which takes in a String array which contains individual assessments, the name of the course and
+	 * the information about the student whom this entry is about. That input is parsed in order to return the weights
+	 * of the assessments 
+	 * This list is also parallel to the list containing the grades 
+	 * 
+	 * @param entryDel
+	 * 			Entry from the input, an individual line from the field named grade in Transcript class
+	 * @return
+	 * 		Returns an ArrayList type Integer which carries the weights of the assessments
+	 */
 	private ArrayList<Integer> weightReturner(String[] entryDel){
 		ArrayList<Integer> weights = new ArrayList<>();
 		
