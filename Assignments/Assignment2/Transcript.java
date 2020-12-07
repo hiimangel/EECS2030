@@ -211,7 +211,7 @@ public class Transcript {
 	/**
 	 * Forms a string/text representation of a report -of all the students 
 	 * and the courses they have taken with all their assignments and their GPA's as well
-	 * as their individual average for that course.
+	 * as their individual average for that course and prints them on a text file and the system console.
 	 * 
 	 * @param students
 	 * 			ArrayList of students formed with respect to the input
